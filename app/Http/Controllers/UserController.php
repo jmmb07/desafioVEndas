@@ -44,5 +44,35 @@ class UserController extends Controller
             ]
         );
     }
+    public function vendasIndex(Request $request) 
+    {
+
+        $response = $this->userService->getvendas($request->dataInicio, $request->dataFim);
+
+        foreach ($response as $venda)
+        {
+            $vendas[] = $venda->getAttributes();
+        }
+
+        return response()->json($vendas);
+    }
+
+    public function indexVendasId(Request $request) 
+    {
+
+        $response = $this->userService->getvendasbyid($request->id_vendedor);
+        $vendas = [];
+        
+        if ($response->isEmpty()) {
+            return response()->json(['message' => 'Nenhuma venda encontrada para o vendedor com o ID especificado.'], 404);
+        }
+
+        foreach ($response as $venda)
+        {
+            $vendas[] = $venda->getAttributes();
+        }
+
+        return response()->json($vendas);
+    }
 
 }
