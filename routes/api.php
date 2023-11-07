@@ -56,6 +56,8 @@ Route::group([
     Route::post('registervendedor', 'UserController@vendedorRegister');
     Route::post('getvendas', 'UserController@vendasIndex');
     Route::post('getvendasbyid', 'UserController@indexVendasId');
+    Route::post('registervenda', 'UserController@registerVendas');
+    Route::get('getvendedores', 'UserController@vendedoresIndex');
 
 });
 

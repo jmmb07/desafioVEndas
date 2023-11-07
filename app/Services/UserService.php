@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Http\Requests\UserRequest;
 use App\Models\User;
 use App\Models\Vendedor;
+use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -15,16 +16,24 @@ class UserService
    {
       $this->user = $user;
    }
+
    public function criausuario (array $data) 
    {    
       $data['role'] = 'user';
       return $this->user->create($data);
    }
+
    public function criavendedor (array $data) 
    {    
       $data['role'] = 'vendedor';
       return $this->user->create($data);
    }
+
+   public function registraVenda(array $data) 
+   {
+      return $venda = Vendedor::create($data);
+   }
+
    public function getvendas($dataInicio, $dataFim)
    {
       $query = Vendedor::query();
@@ -50,6 +59,11 @@ class UserService
        
       return $vendas;
    }   
+
+   public function getvendedores()
+   {
+      return $this->user->where('role','vendedor')->get();
+   }
 }
 
 

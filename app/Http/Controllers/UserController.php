@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
+use App\Http\Requests\VendedorRequest;
+use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 
@@ -44,6 +46,18 @@ class UserController extends Controller
             ]
         );
     }
+    public function vendedoresIndex() 
+    {
+
+        $response = $this->userService->getvendedores();
+
+        foreach ($response as $vendedor)
+        {
+            $vendedores[] = $vendedor->getAttributes();
+        }
+
+        return response()->json($vendedores);
+    }
     public function vendasIndex(Request $request) 
     {
 
@@ -62,7 +76,7 @@ class UserController extends Controller
 
         $response = $this->userService->getvendasbyid($request->id_vendedor);
         $vendas = [];
-        
+
         if ($response->isEmpty()) {
             return response()->json(['message' => 'Nenhuma venda encontrada para o vendedor com o ID especificado.'], 404);
         }
@@ -74,5 +88,25 @@ class UserController extends Controller
 
         return response()->json($vendas);
     }
+    
+    public function registerVendas(VendedorRequest $request) 
+    {
+        $validated = $request->validated();
+        $validated['id_vendedor'] = $request->id_vendedor;
 
+        // Verificar se o usuário com o ID especificado é um vendedor
+        $user = User::where('id', $request->id_vendedor)->where('role', 'vendedor')->first();
+        
+        if (!$user) {
+            return response()->json(['error' => 'O usuario correspondente nao tem a funcao vendedor.'], 403);
+        }
+
+        $response = $this->userService->registraVenda($validated);
+
+        return response()->json(
+            [
+                'message' => 'Venda registrada!',
+            ]
+        );
+    }
 }
